@@ -109,7 +109,7 @@ public class Engine implements Runnable
 		toWebServer = new Socket(request.getHostName(), request.getPort());
 		hosts.put(request.getHostName(), toWebServer);
 		
-		return browserToProxyConn;
+		return toWebServer;
 		
 		
 	}

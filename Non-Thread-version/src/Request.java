@@ -62,7 +62,8 @@ public class Request
 			
 			if (line.contains("Host:"))
 			{
-				setHostName(line.replace("Host: ", ""));
+				String copy = new String(line);
+				setHostName(copy.replace("Host: ", ""));
 			}
 			
 			line = inFromBrowserBufferedReader.readLine();

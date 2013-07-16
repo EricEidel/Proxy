@@ -23,8 +23,7 @@ public class Response
 	{
 		this.headers = new ArrayList<String>();
 		this.body = new ArrayList<Byte>();
-		
-		this.setFromWebServer(fromWebServer);
+		this.fromWebServer = fromWebServer;
 		
 		inFromServerBufferedReader = new BufferedReader(new InputStreamReader(fromWebServer.getInputStream()));
 	}
@@ -49,6 +48,7 @@ public class Response
 	{
 		System.out.println("This is from the headers/response");
 		String line = inFromServerBufferedReader.readLine();
+		System.out.println("Hello!");
 		System.out.println(line);
 		
 		while (!line.equals(""))
