@@ -96,11 +96,31 @@ public class Response
 	 */
 	private void getBodyFromServer() throws Exception 
 	{
+		/*
 		if (this.mode == CONTENT_LEN)
 			getBodyByContLen();
 		else
 			getBodyByChunked();
+		*/
 		
+		getBodyByBytes();
+	}
+	
+	/*
+	 * Gets the body by bytes
+	 */
+	private void getBodyByBytes() throws Exception
+	{
+		byte[] buffer = new byte[1024];
+		
+        // Reader from the server-proxy.
+        BufferedInputStream myReader =  new BufferedInputStream(fromWebServer.getInputStream(),1024);
+		
+		int b; // the byte read from the file
+        while ((b = myReader.read( )) != -1) 
+        {
+    		body.add(new Byte((byte)b));
+        }
 	}
 	
 	/*
@@ -140,12 +160,18 @@ public class Response
 		BufferedOutputStream bodyWriter =  new BufferedOutputStream(toBrowser.getOutputStream());	
 		
 		for (String s: headers)
+		{
 			headerWriter.write(s);
+			System.out.print(s);
+		}
 		
 		headerWriter.flush();
 		
 		for (Byte b: body)
+		{
 			bodyWriter.write(Byte.valueOf(b));
+			System.out.print(b.toString());
+		}
 		
 		bodyWriter.flush();
 	}
