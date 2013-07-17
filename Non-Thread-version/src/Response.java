@@ -116,7 +116,7 @@ public class Response
 	 */
 	private void getBodyByContLen() throws Exception
 	{
-		if (content_len_num == -1)
+		if (content_len_num <= 0)
 			System.out.println("ERROR CHECKING THE CONT_LEN_NUM");
 		else
 		{

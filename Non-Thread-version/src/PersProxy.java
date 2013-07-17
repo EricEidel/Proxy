@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 
 			ServerSocket welcomeSocket = new ServerSocket(2000);
 			proxySocket = welcomeSocket.accept();		
-			Executor service = Executors.newCachedThreadPool();
+			//Executor service = Executors.newCachedThreadPool();
 			
 			// Communication between BROWSER - PROXY
 			while (true)
@@ -42,7 +42,8 @@ import java.util.concurrent.Executors;
 					
 					// create a new engine for handling the request and start it up on the executor
 					Engine eng = new Engine(proxySocket, request);
-					service.execute(eng);
+					eng.run();
+					//service.execute(eng);
 				}
 				
 			}

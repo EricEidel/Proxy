@@ -129,7 +129,7 @@ public class Proxy
 				        while ((b = myReader.read( )) != -1) 
 				        {
 				    		BufferWrite(b, myWriter);
-				    		System.out.print((char)b);
+				    		//System.out.print((char)b);
 				        }
 				        flush(myWriter);
 				        
@@ -141,7 +141,8 @@ public class Proxy
 			catch (Exception e)
 				{
 					System.out.println("An error has occured!");
-					System.out.println(e.getMessage());
+					e.printStackTrace();
+					proxySocket= welcomeSocket.accept();
 				}
 		}
 	}
