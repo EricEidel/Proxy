@@ -55,7 +55,8 @@ public class Request
 	{
 		String line = inFromBrowserBufferedReader.readLine();
 		parseFirstLine(line);
-		
+		System.out.println("First line:");
+		System.out.println(line);
 		while (!line.equals(""))
 		{
 			headers.add(line+CRLF);

@@ -1,6 +1,10 @@
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -9,6 +13,7 @@ public class Response
 {
 	public static final String CRLF = "\r\n";
 	private static final int CONTENT_LEN = 1;
+	private int content_len_num = -1;
 	private static final int CHUNKED = 2;
 	
 	private int mode;
@@ -33,9 +38,10 @@ public class Response
 	 * It changes the ArrayLists body and headers to be the body and the headers of the response from the server.
 	 * This method also changes the mode field, dictating how the body will be read from the server.
 	 */
-	public synchronized void getFromServer() throws IOException
+	public synchronized void getFromServer() throws Exception
 	{
 		getHeadersFromServer();
+		getBodyFromServer();
 		
 	}
 
@@ -48,35 +54,100 @@ public class Response
 	{
 		System.out.println("This is from the headers/response");
 		String line = inFromServerBufferedReader.readLine();
-		System.out.println("Hello!");
-		System.out.println(line);
 		
 		while (!line.equals(""))
 		{
 			this.headers.add(line+CRLF);
 			
-			if (line.contains("content-length:"))
+			if (line.contains("Content-Length:"))
 			{
 				this.mode = CONTENT_LEN;
+				try
+				{
+					content_len_num = Integer.parseInt(line.split(" ")[1]);
+				}
+				catch (Exception e)
+				{
+					System.out.println("Number of content length was not a number!");
+				}
+				
 			}
-			else
+			else if (line.contains("Chunked:"))
 			{
 				this.mode = CHUNKED;
 			}
 			
 			line = inFromServerBufferedReader.readLine();
-			System.out.println(line);
 		}		
 		this.headers.add(CRLF);
+		/*
+		for (String s: this.headers)
+		{
+			System.out.print(s);
+		}
+		System.out.println(this.mode);
+		*/
+	}
+
+	/*
+	 * This methods gets the body of an HTTP response.
+	 * It checks to see what is the this.mode - if it's 1, it uses the content length method to recieve the body.
+	 * If it's 2, it uses the chunked method to recieve the body.
+	 */
+	private void getBodyFromServer() throws Exception 
+	{
+		if (this.mode == CONTENT_LEN)
+			getBodyByContLen();
+		else
+			getBodyByChunked();
+		
+	}
+	
+	/*
+	 * Gets the body by the chunked method.
+	 */
+	private void getBodyByChunked() 
+	{
+		// TODO Auto-generated method stub	
+	}
+
+	/*
+	 * Gets the body by the content length.
+	 */
+	private void getBodyByContLen() throws Exception
+	{
+		if (content_len_num == -1)
+			System.out.println("ERROR CHECKING THE CONT_LEN_NUM");
+		else
+		{
+			byte[] arrBytes = new byte[content_len_num];
+			BufferedInputStream myReader =  new BufferedInputStream(fromWebServer.getInputStream(),content_len_num);
+			myReader.read(arrBytes);
+			for (byte b: arrBytes)
+			{
+				body.add(new Byte(b));
+			}
+		}
+		
 	}
 
 	/*
 	 * This method sends the response from the server back to the browser.
 	 */
-	public synchronized void sendToBrowser() 
+	public synchronized void sendToBrowser(Socket toBrowser) throws IOException 
 	{
-		// TODO Auto-generated method stub
+		BufferedWriter headerWriter = new BufferedWriter(new OutputStreamWriter(toBrowser.getOutputStream()));
+		BufferedOutputStream bodyWriter =  new BufferedOutputStream(toBrowser.getOutputStream());	
 		
+		for (String s: headers)
+			headerWriter.write(s);
+		
+		headerWriter.flush();
+		
+		for (Byte b: body)
+			bodyWriter.write(Byte.valueOf(b));
+		
+		bodyWriter.flush();
 	}
 	
 	/*
@@ -89,10 +160,8 @@ public class Response
 		
 		for (String s: headers)
 		{
-			str += s + "\n";
+			str += s;
 		}
-		
-		str += CRLF;
 		
 		byte[] bytes = new byte[body.size()];
 		

@@ -34,13 +34,17 @@ import java.util.concurrent.Executors;
 					proxySocket = welcomeSocket.accept();
 					System.out.println("The proxy socket was closed! Had to re-open it inside the while loop");
 				}
+				else
+				{
+					System.out.println("New request recieved:");
+					// creates a new request class.
+					Request request = new Request(proxySocket);
+					
+					// create a new engine for handling the request and start it up on the executor
+					Engine eng = new Engine(proxySocket, request);
+					service.execute(eng);
+				}
 				
-				// creates a new request class.
-				Request request = new Request(proxySocket);
-				
-				// create a new engine for handling the request and start it up on the executor
-				Engine eng = new Engine(proxySocket, request);
-				service.execute(eng);
 			}
 			
 			/* NOT REACHED */

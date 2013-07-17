@@ -69,16 +69,29 @@ public class Engine implements Runnable
 			{
 				response.getFromServer();
 				System.out.println("Response recieved!");
+				System.out.println(response.toString());
 			} 
 			catch (IOException e) 
 			{
 				System.out.println("Could not get a the response from the server!");
 				e.printStackTrace();
 			}
+			catch (Exception e) 
+			{
+				System.out.println("Could not get a the response from the server!");
+				e.printStackTrace();
+			}
 			
-			System.out.println(response.toString());
 			// forward the reply from the server
-			response.sendToBrowser();
+			try 
+			{
+				response.sendToBrowser(browserToProxyConn);
+			} 
+			catch (IOException e) 
+			{
+				System.out.println("Could not send the response to browser!");
+				e.printStackTrace();
+			}
 		}
 		else
 		{
