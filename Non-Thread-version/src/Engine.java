@@ -107,7 +107,7 @@ public class Engine implements Runnable
 	 */
 	private Socket checkTCPConnection() throws UnknownHostException, IOException
 	{
-		Socket toWebServer = hosts.get(request.getHostName());
+		Socket toWebServer; /* hosts.get(request.getHostName());
 		
 		if ((toWebServer != null))
 		{
@@ -119,10 +119,10 @@ public class Engine implements Runnable
 		}
 		// If it couldn't get the web server TCP connection from the hash table
 		System.out.println("The TCP connection is new or was closed!");
-		toWebServer = new Socket(request.getHostName(), request.getPort());
+	
 		hosts.put(request.getHostName(), toWebServer);
-		
-		return toWebServer;
+		*/
+		return 	toWebServer = new Socket(request.getHostName(), request.getPort());
 		
 		
 	}
