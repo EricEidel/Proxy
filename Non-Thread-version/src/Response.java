@@ -12,11 +12,7 @@ import java.util.ArrayList;
 public class Response 
 {
 	public static final String CRLF = "\r\n";
-	private static final int CONTENT_LEN = 1;
-	private int content_len_num = -1;
-	private static final int CHUNKED = 2;
-	
-	private int mode;
+
 	private Request request;
 	private ArrayList<String> headers;
 	private ArrayList<Byte> body;
@@ -57,36 +53,11 @@ public class Response
 		
 		while (!line.equals(""))
 		{
-			this.headers.add(line+CRLF);
-			
-			if (line.contains("Content-Length:"))
-			{
-				this.mode = CONTENT_LEN;
-				try
-				{
-					content_len_num = Integer.parseInt(line.split(" ")[1]);
-				}
-				catch (Exception e)
-				{
-					System.out.println("Number of content length was not a number!");
-				}
-				
-			}
-			else if (line.contains("Chunked:"))
-			{
-				this.mode = CHUNKED;
-			}
-			
+			this.headers.add(line+CRLF);			
 			line = inFromServerBufferedReader.readLine();
 		}		
 		this.headers.add(CRLF);
-		/*
-		for (String s: this.headers)
-		{
-			System.out.print(s);
-		}
-		System.out.println(this.mode);
-		*/
+
 	}
 
 	/*
@@ -95,14 +66,7 @@ public class Response
 	 * If it's 2, it uses the chunked method to recieve the body.
 	 */
 	private void getBodyFromServer() throws Exception 
-	{
-		/*
-		if (this.mode == CONTENT_LEN)
-			getBodyByContLen();
-		else
-			getBodyByChunked();
-		*/
-		
+	{		
 		getBodyByBytes();
 	}
 	
@@ -110,9 +74,7 @@ public class Response
 	 * Gets the body by bytes
 	 */
 	private void getBodyByBytes() throws Exception
-	{
-		byte[] buffer = new byte[1024];
-		
+	{		
         // Reader from the server-proxy.
         BufferedInputStream myReader =  new BufferedInputStream(fromWebServer.getInputStream(),1024);
 		
@@ -121,34 +83,6 @@ public class Response
         {
     		body.add(new Byte((byte)b));
         }
-	}
-	
-	/*
-	 * Gets the body by the chunked method.
-	 */
-	private void getBodyByChunked() 
-	{
-		// TODO Auto-generated method stub	
-	}
-
-	/*
-	 * Gets the body by the content length.
-	 */
-	private void getBodyByContLen() throws Exception
-	{
-		if (content_len_num <= 0)
-			System.out.println("ERROR CHECKING THE CONT_LEN_NUM");
-		else
-		{
-			byte[] arrBytes = new byte[content_len_num];
-			BufferedInputStream myReader =  new BufferedInputStream(fromWebServer.getInputStream(),content_len_num);
-			myReader.read(arrBytes);
-			for (byte b: arrBytes)
-			{
-				body.add(new Byte(b));
-			}
-		}
-		
 	}
 
 	/*
@@ -162,7 +96,6 @@ public class Response
 		for (String s: headers)
 		{
 			headerWriter.write(s);
-			System.out.print(s);
 		}
 		
 		headerWriter.flush();
@@ -170,38 +103,11 @@ public class Response
 		for (Byte b: body)
 		{
 			bodyWriter.write(Byte.valueOf(b));
-			System.out.print(b.toString());
 		}
 		
 		bodyWriter.flush();
 	}
 	
-	/*
-	 * This parses the response into a nice string.
-	 */
-	public String toString()
-	{
-		System.out.println("\nPrinting out the response:");
-		String str = "";
-		
-		for (String s: headers)
-		{
-			str += s;
-		}
-		
-		byte[] bytes = new byte[body.size()];
-		
-		int index = 0;
-		for (Byte b: body)
-		{
-			bytes[index]=b;
-			index++;
-		}
-		
-		str += new String(bytes);
-		
-		return str;
-	}
 	// =========== GETTERS AND SETTERS FROM HERE ON ==================
 	
 	public Request getRequest() {

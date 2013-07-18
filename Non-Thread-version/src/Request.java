@@ -90,23 +90,6 @@ public class Request
 			throw new UnsupportedHttpMethodException();
 		}
 	}
-
-	/*
-	 * returns the request in a nicely formated String.
-	 */
-	
-	public String toString()
-	{
-		System.out.println("\nPrinting out the request:");
-		String str = "";
-		
-		for (String s: headers)
-		{
-			str += s;
-		}
-		
-		return str;
-	}
 	
 	/*
 	 * This method forwards the request to the TCP connection toWebServer
@@ -117,7 +100,6 @@ public class Request
 		for (String s: headers)
 		{
 			proxyToWebserverWriter.append(s);
-			System.out.print(s);
 		}	
 		proxyToWebserverWriter.flush();		
 	}
