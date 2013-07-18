@@ -34,11 +34,11 @@ public class Response
 	 * It changes the ArrayLists body and headers to be the body and the headers of the response from the server.
 	 * This method also changes the mode field, dictating how the body will be read from the server.
 	 */
-	public synchronized void getFromServer() throws Exception
+	public void getFromServer() throws Exception
 	{
 		getHeadersFromServer();
-		getBodyFromServer();
-		
+		getBodyFromServer();		
+	
 	}
 
 	/* This method gets the headers from the server
@@ -48,15 +48,17 @@ public class Response
 	 */
 	private void getHeadersFromServer() throws IOException 
 	{
-		System.out.println("This is from the headers/response");
 		String line = inFromServerBufferedReader.readLine();
-		
+		System.out.println("Headers from server:");
 		while (!line.equals(""))
 		{
-			this.headers.add(line+CRLF);			
+			this.headers.add(line+CRLF);	
+			System.out.print(line+CRLF);		
 			line = inFromServerBufferedReader.readLine();
+			
 		}		
 		this.headers.add(CRLF);
+		System.out.println();
 
 	}
 
@@ -66,36 +68,34 @@ public class Response
 	 * If it's 2, it uses the chunked method to recieve the body.
 	 */
 	private void getBodyFromServer() throws Exception 
-	{		
-		getBodyByBytes();
-	}
-	
-	/*
-	 * Gets the body by bytes
-	 */
-	private void getBodyByBytes() throws Exception
-	{		
-        // Reader from the server-proxy.
+	{		 
+		
+		// Reader from the server-proxy.
         BufferedInputStream myReader =  new BufferedInputStream(fromWebServer.getInputStream(),1024);
 		
+        System.out.println("From getBodyBytes");
+        
 		int b; // the byte read from the file
-        while ((b = myReader.read( )) != -1) 
+        while ((b = myReader.read()) != -1) 
         {
+        	System.out.print(b);
     		body.add(new Byte((byte)b));
+    		//System.out.print((char)b);
         }
 	}
-
 	/*
 	 * This method sends the response from the server back to the browser.
 	 */
-	public synchronized void sendToBrowser(Socket toBrowser) throws IOException 
+	public void sendToBrowser(Socket toBrowser) throws IOException 
 	{
 		BufferedWriter headerWriter = new BufferedWriter(new OutputStreamWriter(toBrowser.getOutputStream()));
 		BufferedOutputStream bodyWriter =  new BufferedOutputStream(toBrowser.getOutputStream());	
 		
+		System.out.println("This is the response sent back to the browser:");
 		for (String s: headers)
 		{
 			headerWriter.write(s);
+			System.out.print(s);
 		}
 		
 		headerWriter.flush();
@@ -103,6 +103,7 @@ public class Response
 		for (Byte b: body)
 		{
 			bodyWriter.write(Byte.valueOf(b));
+			System.out.print(b.toString());
 		}
 		
 		bodyWriter.flush();

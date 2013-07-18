@@ -35,7 +35,6 @@ public class Request
 		this.setBrowserSocket(browserSocket);
 		
 		this.inFromBrowserStream = browserSocket.getInputStream();
-		//this.outToBrowserStream = browserSocket.getOutputStream();
 		
 		this.inFromBrowserBufferedReader = new BufferedReader(new InputStreamReader(inFromBrowserStream));
 		
@@ -51,12 +50,11 @@ public class Request
 	 * This version ignores the body of the request as get requests have no body.
 	 * (I left it in the design so that we can expend to post and other requests in the future).
 	 */
-	public synchronized void initParsing() throws Exception
+	public void initParsing() throws Exception
 	{
 		String line = inFromBrowserBufferedReader.readLine();
 		parseFirstLine(line);
-		System.out.println("First line:");
-		System.out.println(line);
+		
 		while (!line.equals(""))
 		{
 			headers.add(line+CRLF);
@@ -94,12 +92,14 @@ public class Request
 	/*
 	 * This method forwards the request to the TCP connection toWebServer
 	 */
-	public synchronized void sendRequestToWebServer(Socket toWebServer) throws IOException 
+	public void sendRequestToWebServer(Socket toWebServer) throws IOException 
 	{
 		OutputStreamWriter proxyToWebserverWriter = new OutputStreamWriter(new DataOutputStream(toWebServer.getOutputStream()));
+		System.out.println("This is the headers sent:");
 		for (String s: headers)
 		{
 			proxyToWebserverWriter.append(s);
+			System.out.print(s);
 		}	
 		proxyToWebserverWriter.flush();		
 	}

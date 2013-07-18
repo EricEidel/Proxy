@@ -22,38 +22,24 @@ import java.util.concurrent.Executors;
 		{
 
 			ServerSocket welcomeSocket = new ServerSocket(2000);
-			proxySocket = welcomeSocket.accept();		
-			//Executor service = Executors.newCachedThreadPool();
-			
+
 			// Communication between BROWSER - PROXY
 			while (true)
 			{
-				// make sure the proxy socket is still open
-				if (proxySocket.isClosed())
-				{
-					proxySocket = welcomeSocket.accept();
-					System.out.println("The proxy socket was closed! Had to re-open it inside the while loop");
-				}
-				else
-				{
-					System.out.println("New request recieved:");
-					// creates a new request class.
-					Request request = new Request(proxySocket);
-					
-					// create a new engine for handling the request and start it up on the executor
-					Engine eng = new Engine(proxySocket, request);
-					eng.run();
-					//service.execute(eng);
-					
-					
-				}
+				proxySocket = welcomeSocket.accept();
 				
+				
+				System.out.println("New request recieved:");
+				// creates a new request class.
+				Request request = new Request(proxySocket);
+				
+				// create a new engine for handling the request and start it up on the executor
+				Engine eng = new Engine(proxySocket, request);
+				eng.run();
+				//service.execute(eng);
+
 			}
 			
 			/* NOT REACHED */
 		}
-
-		/* This method reads the request
-		 * 
-		 */
 	}
