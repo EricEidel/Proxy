@@ -128,19 +128,6 @@ public class Proxy
 					}
 					proxyToBrowserWriter.flush();
 					
-					
-					/*
-					int b; // the byte read from server
-					while ((b = serverResponseReader.read( )) != -1) 
-					{
-						BufferWrite(b, proxyToBrowserWriter);
-						//System.out.print((char)b);
-					}
-					System.out.println("=== WRITE TO BROWSER ===");
-					flush(proxyToBrowserWriter);
-					proxyToBrowserWriter.flush();
-					*/
-					
 					serverResponseReader.close();
 					proxyToBrowserWriter.close();
 					
@@ -164,35 +151,6 @@ public class Proxy
 			
 		}// end of infinite while loop
 	}
-	
-	/*
-	private static void flush(BufferedOutputStream proxyToBrowserWriter) throws Exception
-	{
-		if(count > 0)
-		{
-			byte[] temp = Arrays.copyOfRange(buffer,0,count);
-			
-			proxyToBrowserWriter.write(temp);
-			
-		}
-	}
-	
-	private static void BufferWrite(int b, BufferedOutputStream proxyToBrowserWriter) throws Exception
-	{
-		if(count < bSize)
-		{
-			buffer[count] = (byte)b;
-			count++;
-		}
-		
-		if(count == bSize)
-		{
-			proxyToBrowserWriter.write(buffer);
-			count = 0;
-			buffer = new byte[bSize];
-		}
-		
-	}*/
 
 
 	// This method simply sends all the string list has to the web server
