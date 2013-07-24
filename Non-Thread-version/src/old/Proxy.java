@@ -1,15 +1,13 @@
 package old;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 
 // Try and change the proxy to handle CONNECT and POST requests.
@@ -21,9 +19,7 @@ public class Proxy
 {
 	static final String CRLF = "\r\n";
 	static String host_name;
-	//private static int count;
 	private static int bSize;
-	//private static byte[] buffer;
 	private static Hashtable<String, Socket> hosts;
 	Socket proxySocket;
 	
@@ -108,30 +104,38 @@ public class Proxy
 					send_message_to_server(list, proxyToWebserverWriter);
 					
 					
-					
 					// Reads the response from the web-server and sends it back to the browser
 					
 					// server response reader (server -> proxy)
-					BufferedInputStream serverResponseReader =  new BufferedInputStream(toServer.getInputStream(),bSize);
+					InputStream serverResponseReader =  toServer.getInputStream();
 					
 					// browser response writer (proxy -> browser)
-					BufferedOutputStream proxyToBrowserWriter = new BufferedOutputStream(proxySocket.getOutputStream());
+					DataOutputStream proxyToBrowserWriter = new DataOutputStream(proxySocket.getOutputStream());
 					
-					System.out.println("=== WAITING FOR SERVER ===");
-					
-					byte[] buffer = new byte[bSize];
-					int bytesRead = serverResponseReader.read(buffer, 0, bSize);
-					while (bytesRead != -1)
-					{
-						proxyToBrowserWriter.write(buffer, 0, bytesRead);
-						bytesRead = serverResponseReader.read(buffer, 0, bSize);
+					try {
+						System.out.println("=== WAITING FOR SERVER ===");
+						
+						byte[] buffer = new byte[bSize];
+						int bytesRead = serverResponseReader.read(buffer, 0, bSize);
+						while (bytesRead != -1)
+						{
+							proxyToBrowserWriter.write(buffer, 0, bytesRead);
+							bytesRead = serverResponseReader.read(buffer, 0, bSize);
+						}
+						proxyToBrowserWriter.flush();
+						
+						serverResponseReader.close();
+						proxyToBrowserWriter.close();
+						
+						System.out.println("=== REQUEST COMPLETED ===");
 					}
-					proxyToBrowserWriter.flush();
+					catch (Exception e)
+					{
+						System.out.println("=== ERROR ENCOUNTERED ===");
+						e.printStackTrace();
+						proxyToBrowserWriter.writeBytes("");
+					}
 					
-					serverResponseReader.close();
-					proxyToBrowserWriter.close();
-					
-					System.out.println("=== REQUEST COMPLETED ===");
 					System.gc(); // suggest garbage collection
 				}
 				
