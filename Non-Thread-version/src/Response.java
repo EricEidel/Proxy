@@ -65,13 +65,14 @@ public class Response
 	/*
 	 * This methods gets the body of an HTTP response.
 	 * It checks to see what is the this.mode - if it's 1, it uses the content length method to recieve the body.
-	 * If it's 2, it uses the chunked method to receive the body.
+	 * If it's 2, it uses the chunked method to recieve the body.
 	 */
 	private void getBodyFromServer() throws Exception 
-	{		
+	{		 
 		// This method should check either the mode is chunked or not and get body in two different ways.
 		// This has been an older version now, 
 		// so we just implemented a simple "read all bytes to end of stream" until we fix this to work.
+		
 		
 		// Reader from the server-proxy.
         BufferedInputStream myReader =  new BufferedInputStream(fromWebServer.getInputStream(),1024);
