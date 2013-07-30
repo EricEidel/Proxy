@@ -65,7 +65,7 @@ public class Response
 	/*
 	 * This methods gets the body of an HTTP response.
 	 * It checks to see what is the this.mode - if it's 1, it uses the content length method to recieve the body.
-	 * If it's 2, it uses the chunked method to recieve the body.
+	 * If it's 2, it uses the chunked method to receive the body.
 	 */
 	private void getBodyFromServer() throws Exception 
 	{		 
