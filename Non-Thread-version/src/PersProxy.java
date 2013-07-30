@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 
 			ServerSocket welcomeSocket = new ServerSocket(2000);
 			Executor service = Executors.newCachedThreadPool();
+		
 			// Communication between BROWSER - PROXY
 			while (true)
 			{

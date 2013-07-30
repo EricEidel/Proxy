@@ -69,7 +69,6 @@ public class Engine implements Runnable
 			{
 				response.getFromServer();
 				System.out.println("Response recieved!");
-				System.out.println(response.toString());
 			} 
 			catch (IOException e) 
 			{
